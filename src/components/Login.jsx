@@ -5,15 +5,18 @@ import { Button, Input, Logo } from './index'
 import { useDispatch } from 'react-redux'
 import authService from '../appwrite/auth'
 import { useForm } from 'react-hook-form'
+import { MdClose } from 'react-icons/md'
 
 function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm()
     const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)  // loading state
 
     const login = async (data) => {
         setError("")
+        setLoading(true)  // start loading
         try {
             const session = await authService.login(data)
             if (session) {
@@ -23,15 +26,29 @@ function Login() {
             }
         } catch (error) {
             setError(error.message)
+        } finally {
+            setLoading(false)  // stop loading
         }
     }
+
+    const handleClose = () => {
+        navigate("/")
+    }
+
     return (
-        <div
-            className='flex items-center justify-center w-full'
-        >
-            <h1>welcome</h1>
-            <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-                <div className="mb-2 flex justify-center">
+        <div className='flex items-center justify-center w-full min-h-screen bg-gray-50 px-4'>
+            <div className={`relative mx-auto w-full max-w-lg bg-gray-100 rounded-xl 
+                p-10 border border-black/10 shadow-lg`}>
+                <button
+                    onClick={handleClose}
+                    aria-label="Close login page"
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+                    disabled={loading}  // optional: disable close button while loading
+                >
+                    <MdClose size={24} />
+                </button>
+
+                <div className="mb-2 flex justify-center mx-auto">
                     <span className="inline-block w-full max-w-[100px]">
                         <Logo width="100%" />
                     </span>
@@ -60,7 +77,8 @@ function Login() {
                             {...register("email", {
                                 required: true,
                                 validate: {
-                                    matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                    matchPatern: (value) =>
+                                        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
                                         "Email address must be a valid address",
                                 }
                             })}
@@ -76,12 +94,15 @@ function Login() {
                         <Button
                             type="submit"
                             className="w-full"
-                        >Sign in</Button>
+                            disabled={loading}  // disable while loading
+                        >
+                            {loading ? "Logging..." : "Sign in"}
+                        </Button>
                     </div>
                 </form>
             </div>
         </div>
     )
-}1
+}
 
 export default Login
