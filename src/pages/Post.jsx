@@ -11,7 +11,6 @@ export default function Post() {
     const navigate = useNavigate();
 
     const userData = useSelector((state) => state.auth.userData);
-
     const isAuthor = post && userData ? post.userId === userData.$id : false;
 
     useEffect(() => {
@@ -33,35 +32,52 @@ export default function Post() {
     };
 
     return post ? (
-        <div className="py-8">
+        <div className="py-10 min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
             <Container>
-                <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
-                    <img
-                        src={appwriteService.getPreview(post.featuredImage)}
-                        alt={post.title}
-                        className="rounded-xl"
-                    />
+                <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <div className="relative">
+                        <img
+                            src={appwriteService.getPreview(post.featuredImage)}
+                            alt={post.title}
+                            className="w-full h-80 object-cover"
+                        />
 
-                    {isAuthor && (
-                        <div className="absolute right-6 top-6">
-                            <Link to={`/edit-post/${post.$id}`}>
-                                <Button bgColor="bg-green-500" className="mr-3">
-                                    Edit
+                        {isAuthor && (
+                            <div className="absolute top-4 right-4 flex gap-3">
+                                <Link to={`/edit-post/${post.$id}`}>
+                                    <Button
+                                        bgColor="bg-green-600"
+                                        className="hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow"
+                                    >
+                                        ✏️ Edit
+                                    </Button>
+                                </Link>
+                                <Button
+                                    bgColor="bg-red-600"
+                                    className="hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow"
+                                    onClick={deletePost}
+                                >
+                                    🗑️ Delete
                                 </Button>
-                            </Link>
-                            <Button bgColor="bg-red-500" onClick={deletePost}>
-                                Delete
-                            </Button>
-                        </div>
-                    )}
-                </div>
-                <div className="w-full mb-6">
-                    <h1 className="text-2xl font-bold">{post.title}</h1>
-                </div>
-                <div className="browser-css">
-                    {parse(post.content)}
+                            </div>
+                        )}
                     </div>
+
+                    <div className="p-6 md:p-10">
+                        <h1 className="text-3xl font-extrabold text-gray-800 mb-6 leading-tight tracking-tight">
+                            {post.title}
+                        </h1>
+
+                        <div className="prose prose-lg max-w-none text-gray-700">
+                            {parse(post.content)}
+                        </div>
+                    </div>
+                </div>
             </Container>
         </div>
-    ) : null;
+    ) : (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 text-gray-600 text-lg">
+            Loading post...
+        </div>
+    );
 }
