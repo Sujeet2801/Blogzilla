@@ -35,11 +35,11 @@ export default function Post() {
         <div className="py-10 min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
             <Container>
                 <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    <div className="relative">
+                    <div className="relative ">
                         <img
                             src={appwriteService.getPreview(post.featuredImage)}
                             alt={post.title}
-                            className="w-full h-80 object-cover"
+                            className="w-full h-96"
                         />
 
                         {isAuthor && (
