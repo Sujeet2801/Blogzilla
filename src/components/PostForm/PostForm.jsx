@@ -106,7 +106,7 @@ export default function PostForm({ post }) {
                 />
 
                 {post && (
-                    <div className="w-full">
+                    <div className="w-full h-56">
                         <img
                             src={appwriteService.getPreview(post.featuredImage)}
                             alt={post.title}
